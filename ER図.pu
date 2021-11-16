@@ -1,0 +1,60 @@
+@startuml
+
+' hide the spot
+hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "question" as question_entity {
+  *question_id : number <<generated>>
+  --
+  description : varchar(1000)
+  schema_ddl : varchar(3000)
+}
+
+entity "sample" as sample_entity {
+  *question_id : number <FK>
+  *sample_number : number <<generated>>
+  --
+  data_insert_dml : varchar(2000)
+  answer_select_dml : varchar(2000)
+}
+
+entity "test_case" as test_case_entity {
+  *question_id : number <FK>
+  *test_case_number : number<<generated>>
+  --
+  data_insert_dml : varchar(2000)
+  answer_select_dml : varchar(2000)
+}
+
+entity "answer_history" as answer_history_entity{
+    *question_id : number <FK>
+    *history_number : number
+    --
+    answer_dml : varchar(2000)
+    cost_times : double
+    answered_user_id : number <FK>
+    answered_date_time : datatime
+}
+
+entity "user" as user_entity{
+    *user_id : number
+    --
+    user_name : varchar(100)
+}
+
+entity "problem_collection" as problem_collection_entity{
+    *collection_id : number <generated>
+    *order_number : number
+    --
+    question_id : number <FK>
+}
+
+question_entity ||--|{ sample_entity
+question_entity ||--|{ test_case_entity
+question_entity ||--|{ answer_history_entity
+problem_collection_entity {|--|| question_entity
+
+@enduml
